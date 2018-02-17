@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
-import logo from './logo.svg';
 import './App.css';
 import Form from './Form';
 import Table from './Table';
@@ -30,13 +29,11 @@ class App extends Component {
   stopEditing = () => {
     this.setState({editIdx: -1})
   }
-  handleChange = (e, name, i) => {
-    const { value } = e.target
+  handleSave = (i, x) => {
     this.setState(state => ({
-      data: state.data.map((row, j) => j === i 
-        ? ({...row, [name]: value }) 
-        : (row))
+      data: state.data.map((row, j) => (j === i ? x : row))
     }))
+    this.stopEditing();
   }
 
   render() {
@@ -51,7 +48,7 @@ class App extends Component {
             handleRemove={this.handleRemove}
             startEditing={this.startEditing}
             editIdx={this.state.editIdx}
-            handleChange={this.handleChange}
+            handleSave={this.handleSave}
             stopEditing={this.stopEditing}
             data={this.state.data}
             header={[

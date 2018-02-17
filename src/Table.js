@@ -7,37 +7,34 @@ import {
   TableRow,
   TableRowColumn,
 } from 'material-ui/Table';
-import TextField from 'material-ui/TextField';
 import EditIcon from 'material-ui/svg-icons/image/edit';
 import TrashIcon from 'material-ui/svg-icons/action/delete';
-import CheckIcon from 'material-ui/svg-icons/navigation/check';
 
-const row = (x, i, header, handleRemove, startEditing, editIdx, handleChange, stopEditing) => {
+import InlineForm from './InlineForm';
+
+const row = (x, i, header, handleRemove, startEditing, editIdx, handleSave, stopEditing) => {
   const currentlyEditing = editIdx === i;
-  return (
+  return currentlyEditing ? (
+    <TableRow key={`tr-${i}`}>
+      <InlineForm 
+        key={`inline-form-${i}`}
+        handleSave={handleSave} 
+        header={header} 
+        x={x} 
+        i={i}
+        stopEditing={stopEditing}
+      />
+    </TableRow>
+  ) : (
     <TableRow key={`tr-${i}`} selectable={false}>
-      <TableRowColumn>{currentlyEditing 
-        ? <TextField name="firstName" onChange={e => handleChange(e, 'firstName', i)}  value={x.firstName}/>
-        : x.firstName}
-      </TableRowColumn>
-      <TableRowColumn >{currentlyEditing 
-        ? <TextField name="lastName" onChange={e => handleChange(e, 'lastName', i)}  value={x.lastName}/>
-        : x.lastName}
-      </TableRowColumn>
-      <TableRowColumn >{currentlyEditing 
-        ? <TextField name="username" onChange={e => handleChange(e, 'username', i)}  value={x.username}/>
-        : x.username}
-      </TableRowColumn>
-      <TableRowColumn >{currentlyEditing 
-        ? <TextField name="email" onChange={e => handleChange(e, 'email', i)}  value={x.email}/>
-        : x.email}
-      </TableRowColumn>
+      <TableRowColumn>{x.firstName}</TableRowColumn>
+      <TableRowColumn >{x.lastName}</TableRowColumn>
+      <TableRowColumn >{x.username}</TableRowColumn>
+      <TableRowColumn >{x.email}</TableRowColumn>
       <TableRowColumn>
-        {currentlyEditing 
-          ? <CheckIcon onClick={() => stopEditing(i)} />
-          : <EditIcon onClick={() => startEditing(i)} />}
+          <EditIcon onClick={() => startEditing(i)} />
+          <TrashIcon onClick={() => handleRemove(i)} />
       </TableRowColumn>
-      <TableRowColumn><TrashIcon onClick={() => handleRemove(i)} /></TableRowColumn>
     </TableRow>
   );
 }
@@ -48,11 +45,11 @@ export default ({
   handleRemove,
   startEditing,
   editIdx,
-  handleChange,
+  handleSave,
   stopEditing
 }) => 
   <Table>
-    <TableHeader>
+    <TableHeader adjustForCheckbox={true}>
       <TableRow>
         {header.map( (x, i) => 
           <TableHeaderColumn key={i}>
@@ -60,18 +57,17 @@ export default ({
           </TableHeaderColumn>
         )}
         <TableHeaderColumn />
-        <TableHeaderColumn />
       </TableRow>
     </TableHeader>
-    <TableBody>
-        {data.map((x,i) => row(
+    <TableBody displayRowCheckbox={true}>
+        {data.map(( x, i ) => row(
           x,
           i,
           header,
           handleRemove,
           startEditing,
           editIdx,
-          handleChange,
+          handleSave,
           stopEditing
         ))}
     </TableBody>
