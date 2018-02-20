@@ -9,6 +9,11 @@ import {
 } from 'material-ui/Table';
 import EditIcon from 'material-ui/svg-icons/image/edit';
 import TrashIcon from 'material-ui/svg-icons/action/delete';
+import CheckIcon from 'material-ui/svg-icons/navigation/check';
+import DownArrow from 'material-ui/svg-icons/navigation/arrow-drop-down';
+import UpArrow from 'material-ui/svg-icons/navigation/arrow-drop-up';
+import TextField from 'material-ui/TextField';
+
 
 import InlineForm from './InlineForm';
 
@@ -46,14 +51,31 @@ export default ({
   startEditing,
   editIdx,
   handleSave,
-  stopEditing
+  stopEditing,
+  handleSort,
+  sortDirection,
+  columnToSort
 }) => 
   <Table>
     <TableHeader adjustForCheckbox={true}>
       <TableRow>
         {header.map( (x, i) => 
           <TableHeaderColumn key={i}>
-            {x.name}
+            <div 
+              style={{
+                display: "flex",
+                alignItems: "center"
+              }}
+              onClick={() => handleSort(x.prop)} >
+              <span>{x.name}</span>
+              {columnToSort === x.prop ? (
+                sortDirection === "asc" ? (
+                  <UpArrow />
+                ) : (
+                  <DownArrow />
+                )
+              ) : null}
+            </div>
           </TableHeaderColumn>
         )}
         <TableHeaderColumn />
