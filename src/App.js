@@ -111,25 +111,29 @@ class App extends Component {
   }
 
   render() {
+    const lowerCaseQuery = this.state.query.toLowerCase()
     return (
       <MuiThemeProvider>
         <div className="App">
           <Form onSubmit={submission => this.setState({ data: [...this.state.data, submission]})}/>
-          <TextField
-          floatingLabelText="Query"
-          value={this.state.query} 
-          onChange={e => this.setState({ query: e.target.value })}
-        />
-          <SelectField
-            floatingLabelText="Select a column"
-            value={this.state.value}
-            onChange={(event, index, value) => this.setState({ columnToQuery: value })}
-          >
-            <MenuItem value='firstName' primaryText="First Name" />
-            <MenuItem value='lastName' primaryText="Last Name" />
-            <MenuItem value='username' primaryText="Username" />
-            <MenuItem value='email' primaryText="Email" />
-          </SelectField>
+          <div style={{display: "flex", justifyContent: "center"}}>
+            <TextField
+            floatingLabelText="Query"
+            value={this.state.query} 
+            onChange={e => this.setState({ query: e.target.value })}
+          />
+            <SelectField
+              style={{ marginLeft: "1em" }}
+              floatingLabelText="Select a column"
+              value={this.state.columnToQuery}
+              onChange={(event, index, value) => this.setState({ columnToQuery: value })}
+            >
+              <MenuItem value='firstName' primaryText="First Name" />
+              <MenuItem value='lastName' primaryText="Last Name" />
+              <MenuItem value='username' primaryText="Username" />
+              <MenuItem value='email' primaryText="Email" />
+            </SelectField>
+          </div>
           <Table 
             handleSort={this.handleSort}
             handleRemove={this.handleRemove}
@@ -140,7 +144,9 @@ class App extends Component {
             sortDirection={this.state.sortDirection}
             stopEditing={this.stopEditing}
             data={orderBy(
-              this.state.data, 
+              this.state.query ? this.state.data.filter(
+                x => x[this.state.columnToQuery].toLowerCase().includes(lowerCaseQuery)
+              ) : this.state.data, 
               this.state.columnToSort,
               this.state.sortDirection
             )}
